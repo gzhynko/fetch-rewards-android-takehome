@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Fetch Takehome</string>
-    <string name="retry">Retry</string>
-    <string name="loading">Loading</string>
+    <string name="top_bar_title">Hiring Data</string>
+    <string name="list_id_text">List ID</string>
+    <string name="drawer_jump_to_label">Jump to</string>
     <string name="loading_failed">Loading failed</string>
 </resources>

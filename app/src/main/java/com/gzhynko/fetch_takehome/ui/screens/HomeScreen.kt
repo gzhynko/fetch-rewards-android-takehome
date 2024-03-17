@@ -23,6 +23,13 @@ import com.gzhynko.fetch_takehome.ui.FetchTakehomeUiState
 import com.gzhynko.fetch_takehome.ui.HiringDataListState
 import java.util.*
 
+/**
+ * Renders the Home screen.
+ *
+ * @param fetchTakehomeUiState the UI state used to determine what's being rendered
+ * @param hiringDataListState the state of the hiring data list used to control scroll
+ * @param modifier an optional base Modifier
+ */
 @Composable
 fun HomeScreen(
     fetchTakehomeUiState: FetchTakehomeUiState,
@@ -68,6 +75,9 @@ private fun ErrorScreen(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Renders the retrieved hiring data in a list with listId headers.
+ */
 @OptIn(ExperimentalFoundationApi::class) // sticky header requires the experimental foundation API
 @Composable
 private fun ResultScreen(groupedData: SortedMap<Int, List<HiringDataEntry>>, hiringDataListState: HiringDataListState, modifier: Modifier = Modifier) {
@@ -78,9 +88,12 @@ private fun ResultScreen(groupedData: SortedMap<Int, List<HiringDataEntry>>, hir
             modifier = Modifier.fillMaxHeight().fillMaxWidth(),
             state = hiringDataListState.listState
         ) {
+            // store the current list position to then store positions of the listId headers
+            // this will be used to scroll the list to the listId chosen in the app drawer
             var listPosition = 0
+
             groupedData.forEach { (listId, data) ->
-                stickyHeader {
+                stickyHeader { // add a fancy sticky header to inform user of the displayed items' listIds
                     Column(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.primaryContainer)
@@ -90,7 +103,7 @@ private fun ResultScreen(groupedData: SortedMap<Int, List<HiringDataEntry>>, hir
                             modifier = Modifier.padding(25.dp, 0.dp)
                         ) {
                             Text(
-                                text = "List ID $listId",
+                                text = "${stringResource(R.string.list_id_text)} $listId",
                                 modifier = Modifier.fillMaxWidth(),
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -101,7 +114,7 @@ private fun ResultScreen(groupedData: SortedMap<Int, List<HiringDataEntry>>, hir
                     }
                 }
                 hiringDataListState.listIdPositions[listId] = listPosition
-                listPosition++
+                listPosition++ // header counts as list item
 
                 items(items = data, itemContent = {item ->
                     Column(
@@ -110,7 +123,7 @@ private fun ResultScreen(groupedData: SortedMap<Int, List<HiringDataEntry>>, hir
                         Text((item.name ?: "null"))
                     }
                 })
-                listPosition += data.size
+                listPosition += data.size // increment by the number of list items we just added
             }
         }
     }

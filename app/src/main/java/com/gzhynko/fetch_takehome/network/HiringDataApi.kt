@@ -25,7 +25,7 @@ interface HiringDataApiService {
 class HiringDataApi : HiringDataApiService {
     override suspend fun getData(): SortedMap<Int, List<HiringDataEntry>> =
         withContext(Dispatchers.IO) {
-            val remoteJson = URL(JSON_URL).readText();
+            val remoteJson = URL(JSON_URL).readText()
             val data = Json.decodeFromString<List<HiringDataEntry>>(remoteJson)
             val sortedData = sortData(data)
 

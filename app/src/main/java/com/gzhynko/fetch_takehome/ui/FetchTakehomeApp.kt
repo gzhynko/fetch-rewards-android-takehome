@@ -11,20 +11,30 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gzhynko.fetch_takehome.R
 import com.gzhynko.fetch_takehome.ui.screens.DrawerScreen
 import com.gzhynko.fetch_takehome.ui.screens.HomeScreen
 import kotlinx.coroutines.launch
 
+/**
+ * Stores data related to the hiring data list.
+ *
+ * @param listState the native LazyListState used to control scroll position of the hiring data list
+ * @param listIdPositions the map of listIds and their corresponding positions within the hiring data list
+ */
 data class HiringDataListState (val listState: LazyListState, val listIdPositions: HashMap<Int, Int>)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FetchTakehomeApp() {
+    // init the app view model
     val fetchTakehomeViewModel: FetchTakehomeViewModel = viewModel()
 
+    // init states and the app coroutine scope used by drawer-homescreen interactions
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val listState = HiringDataListState(rememberLazyListState(), HashMap())
+    val hiringDataListState = HiringDataListState(rememberLazyListState(), HashMap())
     val coroutineScope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
@@ -34,13 +44,12 @@ fun FetchTakehomeApp() {
                 DrawerScreen(
                     fetchTakehomeViewModel.fetchTakehomeUiState,
                     drawerState,
-                    listState,
+                    hiringDataListState,
                     coroutineScope,
                 )
             }
         }
     ) {
-        // Screen content
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -49,9 +58,10 @@ fun FetchTakehomeApp() {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text("Hiring Data")
+                        Text(stringResource(R.string.top_bar_title))
                     },
                     navigationIcon = {
+                        // drawer toggle button
                         IconButton(onClick = {
                             coroutineScope.launch {
                                 drawerState.apply {
@@ -59,14 +69,15 @@ fun FetchTakehomeApp() {
                                 }
                             }
                         }) {
-                            Icon(Icons.Filled.Menu, contentDescription = "")
+                            Icon(Icons.Filled.Menu, contentDescription = "Open drawer")
                         }
                     },
                     actions = {
+                        // refresh button
                         IconButton(onClick = { fetchTakehomeViewModel.getHiringData() }) {
                             Icon(
                                 imageVector = Icons.Filled.Refresh,
-                                contentDescription = "Localized description"
+                                contentDescription = "Refresh the list contents"
                             )
                         }
                     },
@@ -80,7 +91,7 @@ fun FetchTakehomeApp() {
             ) {
                 HomeScreen(
                     fetchTakehomeViewModel.fetchTakehomeUiState,
-                    listState
+                    hiringDataListState
                 )
             }
         }
