@@ -17,4 +17,6 @@ Note: the app is written in Kotlin and uses the new Jetpack Compose UI toolkit.
 4. Build and run the app.
 
 ## Demo
-![Application home screen](assets/demo.png)
+![Application home screen](assets/demo_homescreen.png)
+![Application drawer](assets/demo_drawer.png)
+
